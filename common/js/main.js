@@ -66,7 +66,7 @@ $(document).ready(function() {
         <td>${val.qr}</td>
         <td>${val.id}</td>
         <td>
-            <a id="${val.id}" href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+            <a id="${val.id}" href="#addEmployeeModal" class="edit fillData" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
             <a id="${val.id}" href="#deleteEmployeeModal" class="delete js-delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
         </td>
       </tr>`;  
@@ -136,7 +136,7 @@ $(document).ready(function() {
           <td>${val.qr}</td>
           <td>${val.id}</td>
           <td>
-              <a id="${val.id}" href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+              <a id="${val.id}" href="#addEmployeeModal" class="edit fillData" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
               <a id="${val.id}" href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
           </td>
         </tr>`;  
@@ -146,7 +146,7 @@ $(document).ready(function() {
   }
 
   // add value item to popup edit
-  $(document).on('click','.edit',function(e){
+  $(document).on('click','.fillData',function(e){
     e.preventDefault()
     let idEdit = $(this).attr('id')
     
@@ -178,11 +178,11 @@ $(document).ready(function() {
                   </div>
                   <div class="modal-footer">
                       <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                      <input id="${val.id}" type="submit" class="btn btn-info js-update" value="Update">
+                      <input id="${val.id}" type="submit" class="btn btn-info js-add" data-action="PUT" value="Update">
                   </div>
             </div>`;  
-              $("#editEmployeeModal .modal-dialog").empty();                      
-              $("#editEmployeeModal .modal-dialog").append(dataShow);            
+              $("#addEmployeeModal .modal-dialog").empty();                      
+              $("#addEmployeeModal .modal-dialog").append(dataShow);            
             }             
           });  
         }
@@ -190,29 +190,7 @@ $(document).ready(function() {
 
   });
 
-  $(".js-add").click(function() {  
-    let valueQr = $("#qr").val();
-    let valueName = $("#name").val(); 
-    let valuePrice = $("#price").val(); 
-    //function load_ajax()-> add values in Data api
-    function load_ajax_add() {
-      //post value ajax api
-      $.ajax({
-        type: "POST",
-        url: "https://63a56082318b23efa791bf88.mockapi.io/api/crud",
-        data: {
-          qr: valueQr,
-          name: valueName,
-          price: valuePrice
-        },
-        success: function (data){          
-          // Note: Click add Value  -> reload page -> render page have new data
-            window.location.reload();
-         }
-      });
-    }
-    load_ajax_add();
-  }); 
+ 
 
   // Delete value
   $(document).on('click','.js-delete',function(e){
@@ -234,65 +212,34 @@ $(document).ready(function() {
     }
   });
 
-  // Edit value
-  $(document).on('click','.js-change',function(){
-    let idChange = $(this).attr('id');
 
-    // render data vào lại ô input nhập
+  $(document).on('click','.js-add',function(){ 
+    let name = $("#name").val(); 
+    let qr = $("#addEmployeeModal #qr").val();
+    let price = $("#price").val(); 
+    let action = $(this).data('action');
+    let url = "https://63a56082318b23efa791bf88.mockapi.io/api/crud";
+
+    if(action === "PUT"){
+      let id = $(this).attr('id'); 
+      url = `https://63a56082318b23efa791bf88.mockapi.io/api/crud/${id}`;
+    }
+
     $.ajax({
-      type: "GET",
-      url: "https://63a56082318b23efa791bf88.mockapi.io/api/crud",
-      success: function(data){
-          // console.log(idChange);          
-          $.each(data, function( index, value ) {
-            // console.log(value.id);
-            if( idChange == value.id){
-              let valueInput = `
-              <div class="form_value">
-                <div class="fied">
-                  <label for="">Ma Sp</label>
-                  <input type="text" name="qr" id="qr" value="${value.qr}">
-                </div>
-                <div class="fied">
-                  <label for="">Ten</label>
-                  <input type="text" name="name" id="name"  value="${value.name}">
-                </div>
-                <div class="fied">
-                  <label for="">Gia</label>
-                  <input type="number" name="price" id="price"  value="${value.price}">
-                </div>
-              </div>
-              <input type="hidden" name="id" id=""  value="${idChange}" class="input__hidden">
-              <button class="add_item--btn js-update">Add</button>
-              `;  
-              $(".form_value").empty();                      
-              $(".form_value").append(valueInput);            
-            }             
-          });  
+      type: action,
+      url: url,
+      data: {
+        name,
+        qr,
+        price
+      },
+      success: function (data){          
+          window.location.reload();
         }
     });
-  });
-
-  $(document).on('click','.js-update',function(){ 
-    let QrChange = $("#editEmployeeModal #qr").val();
-    let NameChange = $("#editEmployeeModal #name").val(); 
-    let PriceChange = $("#editEmployeeModal #price").val(); 
-    let idBtnChange = $(this).attr('id'); 
-    // console.log(NameChange);
-    $.ajax({
-      type: "PUT",
-      url: `https://63a56082318b23efa791bf88.mockapi.io/api/crud/${idBtnChange}`,
-      data: {
-        qr:  QrChange,
-        name: NameChange,
-        price: PriceChange
-      },
-      success: function (data){   
-        window.location.reload();                    
-      }
-    });
-   });
+  }); 
 });
+
 function deleteData(arr){
   $.each(arr, function( key, val ) {
     $.ajax({
