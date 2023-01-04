@@ -104,6 +104,8 @@ table.table .avatar {
 .pagination {
     float: right;
     margin: 0 0 5px;
+    display: flex;
+    align-items: center;
 }
 .pagination li a {
     border: none;
