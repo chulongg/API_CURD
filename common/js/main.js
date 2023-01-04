@@ -110,7 +110,8 @@ $(document).ready(function() {
       type: "GET",
       url: `https://63a56082318b23efa791bf88.mockapi.io/api/crud/${idEdit}`,
       success: function(data){
-          let dataShow = `
+          let dataShow = 
+          `
             <div class="modal-content">
                 <div class="modal-header">						
                     <h4 class="modal-title">Edit ${data.name}</h4>
@@ -134,7 +135,8 @@ $(document).ready(function() {
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
                     <input id="${data.id}" type="submit" class="btn btn-info js-add" data-action="PUT" value="Update">
                 </div>
-          </div>`;  
+            </div>
+          `;  
           $("#addEmployeeModal .modal-dialog").empty();                      
           $("#addEmployeeModal .modal-dialog").append(dataShow);            
         }
@@ -204,23 +206,25 @@ $(document).ready(function() {
 // templateDataa 
 function templateDataa(arr){
   $.each(arr, function( index, val ) {
-    let dataShow = `
-    <tr id="rows${val.id}">
-      <td>
-          <span class="custom-checkbox">
-              <input type="checkbox" id="checkbox${index}" name="options[]" class="test" value="${val.id}">
-              <label for="checkbox${index}"></label>
-          </span>
-      </td>
-      <td>${val.name}</td>
-      <td>${val.price}</td>
-      <td>${val.qr}</td>
-      <td>${val.id}</td>
-      <td>
-          <a id="${val.id}" href="#addEmployeeModal" class="edit fillData" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-          <a id="${val.id}" href="#deleteEmployeeModal" class="delete js-delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-      </td>
-    </tr>`;  
+    let dataShow = 
+    `
+      <tr id="rows${val.id}">
+        <td>
+            <span class="custom-checkbox">
+                <input type="checkbox" id="checkbox${index}" name="options[]" class="test" value="${val.id}">
+                <label for="checkbox${index}"></label>
+            </span>
+        </td>
+        <td>${val.name}</td>
+        <td>${val.price}</td>
+        <td>${val.qr}</td>
+        <td>${val.id}</td>
+        <td>
+            <a id="${val.id}" href="#addEmployeeModal" class="edit fillData" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+            <a id="${val.id}" href="#deleteEmployeeModal" class="delete js-delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+        </td>
+      </tr>
+    `;  
     $(".table-striped tbody").append(dataShow);
   });  
 }
