@@ -58,10 +58,9 @@ $(document).ready(function() {
     for (i = 0;i < numPages;i++) {  
       var pageNum = i + 1; 
       let active = "";
-      let disable = "";
       i === 0 ? active = "active" : active="";
       if(i === 0){
-        $('.pagination').prepend(`<li class="page-item ${disable}"><a href="#" rel="${i}" class="page-link next-all">Prev All</a></li>`);  
+        $('.pagination').prepend(`<li class="page-item"><a href="#" rel="${i}" class="page-link next-all">Prev All</a></li>`);  
       }
       if(i === 0 && i === (numPages-2)){
         $('.pagination').append ('<li class="page-item '+active+'"><a href="#"  rel="'+i+'" class="page-link">'+pageNum+'</a></li>');  
