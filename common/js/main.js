@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  let rowsShown = 5;  
+  let rowsShown = 12;  
   $('.items_show').html(rowsShown)
    // Activate tooltip
   $('[data-toggle="tooltip"]').tooltip();
@@ -33,7 +33,7 @@ $(document).ready(function() {
   });
   //Render Data in web
   function renderData(data, rowsTotal){
-    let newData = data.slice(0, rowsShown);
+    let newData = data.reverse().slice(0, rowsShown);
     let numPages = Math.ceil(rowsTotal/rowsShown);  
     // How many pages can be around the current page
     let maxAround = 1;
@@ -43,16 +43,36 @@ $(document).ready(function() {
     let currentPage = 1;
 
     let endRange = numPages - maxRange;
-    console.log("endRange: "+endRange)
     // Check if we're in the starting section
     let inStartRange = currentPage <= maxRange;
     // Check if we're in the ending section
     let inEndRange = currentPage >= endRange;
-    console.log("inEndRange: "+inEndRange)
      // We need this for the span(s)
     let lastDotIndex = -1;
 
     currentPage > 1 ? disable = "disable1" : disable="";
+    
+    $.each(newData, function( index, val ) {
+      let dataShow = `
+      <tr id="rows${val.id}">
+        <td>
+            <span class="custom-checkbox">
+                <input type="checkbox" id="checkbox${index}" name="options[]" class="test" value="${val.id}">
+                <label for="checkbox${index}"></label>
+            </span>
+        </td>
+        <td>${val.name}</td>
+        <td>${val.price}</td>
+        <td>${val.qr}</td>
+        <td>${val.id}</td>
+        <td>
+            <a id="${val.id}" href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+            <a id="${val.id}" href="#deleteEmployeeModal" class="delete js-delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+        </td>
+      </tr>`;  
+      $(".table-striped tbody").append(dataShow);
+    });  
+    
     for (i = 0;i < numPages;i++) {  
       var pageNum = i + 1; 
       let active = "";
@@ -123,48 +143,8 @@ $(document).ready(function() {
         $(".table-striped tbody").append(dataShow);
       });    
     });  
-    $.each(newData, function( index, val ) {
-      let dataShow = `
-      <tr id="rows${val.id}">
-        <td>
-            <span class="custom-checkbox">
-                <input type="checkbox" id="checkbox${index}" name="options[]" class="test" value="${val.id}">
-                <label for="checkbox${index}"></label>
-            </span>
-        </td>
-        <td>${val.name}</td>
-        <td>${val.price}</td>
-        <td>${val.qr}</td>
-        <td>${val.id}</td>
-        <td>
-            <a id="${val.id}" href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-            <a id="${val.id}" href="#deleteEmployeeModal" class="delete js-delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-        </td>
-      </tr>`;  
-      $(".table-striped tbody").append(dataShow);
-    });    
   }
 
-  $(document).on('click','.del_all',function(e){
-    let arrID = []
-    if (confirm("Are you sure you want to delete these Records?")) {
-      $('.test').each(function(){
-        if($(this).is(":checked")){
-          arrID.push($(this).val())
-            $.each( arrID, function( key, val ) {
-              $.ajax({
-                url: `https://63a56082318b23efa791bf88.mockapi.io/api/crud/${val}`,
-                type: 'DELETE',
-                success: function(data) {        
-                  $('#deleteEmployeeModal').hide()
-                  $('#rows'+val).remove()
-                }
-              });
-            });
-        }
-      });
-    }
-  });
   // add value item to popup edit
   $(document).on('click','.edit',function(e){
     e.preventDefault()
@@ -237,18 +217,20 @@ $(document).ready(function() {
   // Delete value
   $(document).on('click','.js-delete',function(e){
     e.preventDefault()
-    let idDelete= $(this).attr('id');  
-    let $this = $(this);  
-    if (confirm("Are you sure you want to delete these Records?")) {
-      $.ajax({
-        url: `https://63a56082318b23efa791bf88.mockapi.io/api/crud/${idDelete}`,
-        type: 'DELETE',
-        success: function(data) {        
-          $this.parents().remove('tr');
-          $('#deleteEmployeeModal').hide()
-          $('#rows'+idDelete).remove()
+    let arrID = []
+    let style = $(this).data('style')
+    if(style){
+      $('.test').each(function(){
+        if($(this).is(":checked")){
+            arrID.push($(this).val())
         }
       });
+    }
+    else{
+      arrID.push($(this).attr('id'))
+    }
+    if (confirm("Are you sure you want to delete these Records?")) {
+      deleteData(arrID)
     }
   });
 
@@ -311,3 +293,15 @@ $(document).ready(function() {
     });
    });
 });
+function deleteData(arr){
+  $.each(arr, function( key, val ) {
+    $.ajax({
+      url: `https://63a56082318b23efa791bf88.mockapi.io/api/crud/${val}`,
+      type: 'DELETE',
+      success: function(data) {        
+        $('#deleteEmployeeModal').hide()
+        $('#rows'+val).remove()
+      }
+    });
+  });
+}
