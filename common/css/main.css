@@ -118,6 +118,7 @@ table.table .avatar {
     border-radius: 2px !important;
     text-align: center;
     padding: 0 6px;
+    border-radius: 50% !important;
 }
 .pagination li a:hover {
     color: #666;
