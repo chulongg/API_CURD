@@ -80,7 +80,7 @@ $(document).ready(function() {
             lastDotIndex = i;
             $('.pagination').append ('<li class="page-item"><span class="dots">...</span></li>');
         }
-    }
+      }
       if(i === numPages - 1){
         $('.pagination').append('<li class="page-item"><a href="#" rel="'+(pageNum-1)+'" class="page-link next-all">Next All</a></li>');  
       }
