@@ -178,7 +178,7 @@ $(document).ready(function() {
     let name = $("#name").val(); 
     let qr = $("#addEmployeeModal #qr").val();
     let price = $("#price").val(); 
-    let type = $(this).data('action');
+    let action = $(this).data('action');
     let url = "https://63a56082318b23efa791bf88.mockapi.io/api/crud";
 
     if(action === "PUT"){
@@ -187,7 +187,7 @@ $(document).ready(function() {
     }
 
     $.ajax({
-      type,
+      type: action,
       url,
       data: {
         name,
@@ -195,8 +195,7 @@ $(document).ready(function() {
         price
       },
       success: function (data){    
-        console.log(data)      
-          // window.location.reload();
+          window.location.reload();
         }
     });
 
