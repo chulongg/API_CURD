@@ -55,8 +55,6 @@ $(document).ready(function() {
 
     currentPage > 1 ? disable = "disable1" : disable="";
     
-    
-    
     for (i = 0;i < numPages;i++) {  
       var pageNum = i + 1; 
       let active = "";
@@ -65,7 +63,7 @@ $(document).ready(function() {
       if(i === 0){
         $('.pagination').prepend(`<li class="page-item ${disable}"><a href="#" rel="${i}" class="page-link next-all">Prev All</a></li>`);  
       }
-      if(i === (numPages-2)){
+      if(i === 0 && i === (numPages-2)){
         $('.pagination').append ('<li class="page-item '+active+'"><a href="#"  rel="'+i+'" class="page-link">'+pageNum+'</a></li>');  
       }
       else if (inStartRange && i < maxRange) {
@@ -160,7 +158,16 @@ $(document).ready(function() {
       arrID.push($(this).attr('id'))
     }
     if (confirm("Are you sure you want to delete these Records?")) {
-      deleteData(arrID)
+      $.each(arrID, function( key, val ) {
+        $.ajax({
+          url: `https://63a56082318b23efa791bf88.mockapi.io/api/crud/${val}`,
+          type: 'DELETE',
+          success: function(data) {        
+            $('#deleteEmployeeModal').hide()
+            $('#rows'+val).remove()
+          }
+        });
+      });
     }
   });
 
@@ -194,19 +201,7 @@ $(document).ready(function() {
 
 });
 
-function deleteData(arr){
-  $.each(arr, function( key, val ) {
-    $.ajax({
-      url: `https://63a56082318b23efa791bf88.mockapi.io/api/crud/${val}`,
-      type: 'DELETE',
-      success: function(data) {        
-        $('#deleteEmployeeModal').hide()
-        $('#rows'+val).remove()
-      }
-    });
-  });
-}
-
+// templateDataa 
 function templateDataa(arr){
   $.each(arr, function( index, val ) {
     let dataShow = `
