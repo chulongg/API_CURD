@@ -52,12 +52,14 @@ $(document).ready(function() {
      // We need this for the span(s)
     let lastDotIndex = -1;
 
+    currentPage > 1 ? disable = "disable1" : disable="";
     for (i = 0;i < numPages;i++) {  
       var pageNum = i + 1; 
       let active = "";
+      let disable = "";
       i === 0 ? active = "active" : active="";
       if(i === 0){
-        $('.pagination').prepend('<li class="page-item"><a href="#" rel="'+i+'" class="page-link next-all">Prev All</a></li>');  
+        $('.pagination').prepend(`<li class="page-item ${disable}"><a href="#" rel="${i}" class="page-link prev-all next-all disable">Prev All</a></li>`);  
       }
       if(i === 0 || i === (numPages-2)){
         $('.pagination').append ('<li class="page-item '+active+'"><a href="#"  rel="'+i+'" class="page-link">'+pageNum+'</a></li>');  
@@ -92,6 +94,12 @@ $(document).ready(function() {
       if ($(this).hasClass('next-all')) {
         let target = $(this).attr('rel')
         $(`.page-link[rel="${target}"]`).not('.next-all').parent().addClass('active');
+      }
+      if(currPage > 0){
+        $('.prev-all').removeClass('disable')
+      }
+      else{
+        $('.prev-all').addClass('disable')
       }
       $('.table  tbody tr').remove()
       $.each(newData, function( index, val ) {
