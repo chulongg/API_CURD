@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  let rowsShown = 12;  
+  let rowsShown = 1;  
   $('.items_show').html(rowsShown)
    // Activate tooltip
   $('[data-toggle="tooltip"]').tooltip();
@@ -33,7 +33,10 @@ $(document).ready(function() {
   });
   //Render Data in web
   function renderData(data, rowsTotal){
+
     let newData = data.reverse().slice(0, rowsShown);
+    templateDataa(newData)
+
     let numPages = Math.ceil(rowsTotal/rowsShown);  
     // How many pages can be around the current page
     let maxAround = 1;
@@ -52,26 +55,7 @@ $(document).ready(function() {
 
     currentPage > 1 ? disable = "disable1" : disable="";
     
-    $.each(newData, function( index, val ) {
-      let dataShow = `
-      <tr id="rows${val.id}">
-        <td>
-            <span class="custom-checkbox">
-                <input type="checkbox" id="checkbox${index}" name="options[]" class="test" value="${val.id}">
-                <label for="checkbox${index}"></label>
-            </span>
-        </td>
-        <td>${val.name}</td>
-        <td>${val.price}</td>
-        <td>${val.qr}</td>
-        <td>${val.id}</td>
-        <td>
-            <a id="${val.id}" href="#addEmployeeModal" class="edit fillData" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-            <a id="${val.id}" href="#deleteEmployeeModal" class="delete js-delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-        </td>
-      </tr>`;  
-      $(".table-striped tbody").append(dataShow);
-    });  
+    
     
     for (i = 0;i < numPages;i++) {  
       var pageNum = i + 1; 
@@ -79,9 +63,9 @@ $(document).ready(function() {
       let disable = "";
       i === 0 ? active = "active" : active="";
       if(i === 0){
-        $('.pagination').prepend(`<li class="page-item ${disable}"><a href="#" rel="${i}" class="page-link prev-all next-all disable">Prev All</a></li>`);  
+        $('.pagination').prepend(`<li class="page-item ${disable}"><a href="#" rel="${i}" class="page-link next-all">Prev All</a></li>`);  
       }
-      if(i === 0 || i === (numPages-2)){
+      if(i === (numPages-2)){
         $('.pagination').append ('<li class="page-item '+active+'"><a href="#"  rel="'+i+'" class="page-link">'+pageNum+'</a></li>');  
       }
       else if (inStartRange && i < maxRange) {
@@ -115,33 +99,8 @@ $(document).ready(function() {
         let target = $(this).attr('rel')
         $(`.page-link[rel="${target}"]`).not('.next-all').parent().addClass('active');
       }
-      if(currPage > 0){
-        $('.prev-all').removeClass('disable')
-      }
-      else{
-        $('.prev-all').addClass('disable')
-      }
       $('.table  tbody tr').remove()
-      $.each(newData, function( index, val ) {
-        let dataShow = `
-        <tr id="rows${val.id}">
-          <td>
-              <span class="custom-checkbox">
-                  <input type="checkbox" id="checkbox${index}" name="options[]" class="test" value="${val.id}">
-                  <label for="checkbox${index}"></label>
-              </span>
-          </td>
-          <td>${val.name}</td>
-          <td>${val.price}</td>
-          <td>${val.qr}</td>
-          <td>${val.id}</td>
-          <td>
-              <a id="${val.id}" href="#addEmployeeModal" class="edit fillData" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-              <a id="${val.id}" href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-          </td>
-        </tr>`;  
-        $(".table-striped tbody").append(dataShow);
-      });    
+      templateDataa(newData)
     });  
   }
 
@@ -149,50 +108,43 @@ $(document).ready(function() {
   $(document).on('click','.fillData',function(e){
     e.preventDefault()
     let idEdit = $(this).attr('id')
-    
     $.ajax({
       type: "GET",
-      url: "https://63a56082318b23efa791bf88.mockapi.io/api/crud",
+      url: `https://63a56082318b23efa791bf88.mockapi.io/api/crud/${idEdit}`,
       success: function(data){
-          $.each(data, function( index, val ) {
-            if( idEdit == val.id){
-              let dataShow = `
-              <div class="modal-content">
-                  <div class="modal-header">						
-                      <h4 class="modal-title">Edit ${val.name}</h4>
-                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  </div>
-                  <div class="modal-body">					
-                      <div class="form-group">
-                          <label>Name</label>
-                          <input id="name" type="text" value="${val.name}" class="form-control" required>
-                      </div>
-                      <div class="form-group">
-                          <label>Price</label>
-                          <input id="price" type="number" value="${val.price}" class="form-control" required>
-                      </div>
-                      <div class="form-group">
-                          <label>QR</label>
-                          <input id="qr" type="text" value="${val.qr}" class="form-control" required>
-                      </div>
-                  </div>
-                  <div class="modal-footer">
-                      <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                      <input id="${val.id}" type="submit" class="btn btn-info js-add" data-action="PUT" value="Update">
-                  </div>
-            </div>`;  
-              $("#addEmployeeModal .modal-dialog").empty();                      
-              $("#addEmployeeModal .modal-dialog").append(dataShow);            
-            }             
-          });  
+          let dataShow = `
+            <div class="modal-content">
+                <div class="modal-header">						
+                    <h4 class="modal-title">Edit ${data.name}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">					
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input id="name" type="text" value="${data.name}" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input id="price" type="number" value="${data.price}" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>QR</label>
+                        <input id="qr" type="text" value="${data.qr}" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                    <input id="${data.id}" type="submit" class="btn btn-info js-add" data-action="PUT" value="Update">
+                </div>
+          </div>`;  
+          $("#addEmployeeModal .modal-dialog").empty();                      
+          $("#addEmployeeModal .modal-dialog").append(dataShow);            
         }
     });
 
   });
 
- 
-
-  // Delete value
+  // Delete value one item and all item
   $(document).on('click','.js-delete',function(e){
     e.preventDefault()
     let arrID = []
@@ -212,7 +164,7 @@ $(document).ready(function() {
     }
   });
 
-
+  // change and add val 
   $(document).on('click','.js-add',function(){ 
     let name = $("#name").val(); 
     let qr = $("#addEmployeeModal #qr").val();
@@ -237,7 +189,9 @@ $(document).ready(function() {
           window.location.reload();
         }
     });
+
   }); 
+
 });
 
 function deleteData(arr){
@@ -251,4 +205,27 @@ function deleteData(arr){
       }
     });
   });
+}
+
+function templateDataa(arr){
+  $.each(arr, function( index, val ) {
+    let dataShow = `
+    <tr id="rows${val.id}">
+      <td>
+          <span class="custom-checkbox">
+              <input type="checkbox" id="checkbox${index}" name="options[]" class="test" value="${val.id}">
+              <label for="checkbox${index}"></label>
+          </span>
+      </td>
+      <td>${val.name}</td>
+      <td>${val.price}</td>
+      <td>${val.qr}</td>
+      <td>${val.id}</td>
+      <td>
+          <a id="${val.id}" href="#addEmployeeModal" class="edit fillData" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+          <a id="${val.id}" href="#deleteEmployeeModal" class="delete js-delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+      </td>
+    </tr>`;  
+    $(".table-striped tbody").append(dataShow);
+  });  
 }
