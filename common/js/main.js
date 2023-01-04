@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  let rowsShown = 1;  
+  let rowsShown = 5;  
   $('.items_show').html(rowsShown)
    // Activate tooltip
   $('[data-toggle="tooltip"]').tooltip();
@@ -178,7 +178,7 @@ $(document).ready(function() {
     let name = $("#name").val(); 
     let qr = $("#addEmployeeModal #qr").val();
     let price = $("#price").val(); 
-    let action = $(this).data('action');
+    let type = $(this).data('action');
     let url = "https://63a56082318b23efa791bf88.mockapi.io/api/crud";
 
     if(action === "PUT"){
@@ -187,15 +187,16 @@ $(document).ready(function() {
     }
 
     $.ajax({
-      type: action,
-      url: url,
+      type,
+      url,
       data: {
         name,
         qr,
         price
       },
-      success: function (data){          
-          window.location.reload();
+      success: function (data){    
+        console.log(data)      
+          // window.location.reload();
         }
     });
 
