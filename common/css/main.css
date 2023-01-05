@@ -126,6 +126,10 @@ table.table .avatar {
     text-decoration: none;
     font-weight: 700;
 }
+.pagination a.next-all{
+    min-width: auto;
+    padding: 0;
+}
 .pagination a:hover {
     color: #666;
 }
