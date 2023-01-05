@@ -184,7 +184,7 @@ function templateDataa(arr){
   });  
 }
 
-
+// pagination 
 function pagination(currentPage, totalPage, numberShow){
   currentPage = currentPage ? currentPage : 1;
   let minus = parseInt(currentPage) - parseInt(numberShow);
