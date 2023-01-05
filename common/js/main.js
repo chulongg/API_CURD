@@ -1,7 +1,11 @@
 $(document).ready(function() {
-  let rowsShown = 5;  
+
+  let rowsShown = 5; 
+
+  // show items 
   $('.items_show').html(rowsShown)
    // Activate tooltip
+
   $('[data-toggle="tooltip"]').tooltip();
               
   // Select/Deselect checkboxes
@@ -16,11 +20,14 @@ $(document).ready(function() {
           });
       } 
   });
+
+  // Select/Deselect checkboxes
   $(document).on('click','.test',function(e){
       if(!$(this).checked){
           $("#selectAll").prop("checked", false);
       }
   });
+  
    //Call data Api 
   $.ajax({
     type: "GET",
