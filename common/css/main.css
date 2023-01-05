@@ -107,7 +107,7 @@ table.table .avatar {
     display: flex;
     align-items: center;
 }
-.pagination li a {
+.pagination a {
     border: none;
     font-size: 13px;
     min-width: 30px;
@@ -119,11 +119,12 @@ table.table .avatar {
     text-align: center;
     padding: 0 6px;
     border-radius: 50% !important;
+    text-decoration: none;
 }
-.pagination li a:hover {
+.pagination a:hover {
     color: #666;
 }
-.pagination li a:hover:is(.next-all) {
+.pagination a:hover:is(.next-all) {
     background: transparent !important;
 }	
 .page-link.next-all.disable {
@@ -132,8 +133,9 @@ table.table .avatar {
 .page-link:focus{
     box-shadow: none !important;
 }
-.pagination li.active a, .pagination li.active a.page-link {
+.pagination  a.active, .pagination li.active a.page-link,.pagination  a.page-link:not(.next-all) {
     background: #03A9F4;
+    color: #fff;
 }
 .pagination li.active a:hover {        
     background: #0397d6;

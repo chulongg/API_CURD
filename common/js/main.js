@@ -38,66 +38,25 @@ $(document).ready(function() {
     templateDataa(newData)
 
     let numPages = Math.ceil(rowsTotal/rowsShown);  
-    // How many pages can be around the current page
-    let maxAround = 1;
-    // How many pages are displayed if in beginning or end range
-    let maxRange = 3;
-    // The current page (pass this however you like)
-    let currentPage = 1;
 
-    let endRange = numPages - maxRange;
-    // Check if we're in the starting section
-    let inStartRange = currentPage <= maxRange;
-    // Check if we're in the ending section
-    let inEndRange = currentPage >= endRange;
-     // We need this for the span(s)
-    let lastDotIndex = -1;
-
-    currentPage > 1 ? disable = "disable1" : disable="";
+    pagination(1, numPages, 1)
     
-    for (i = 0;i < numPages;i++) {  
-      var pageNum = i + 1; 
-      let active = "";
-      i === 0 ? active = "active" : active="";
-      if(i === 0){
-        $('.pagination').prepend(`<li class="page-item"><a href="#" rel="${i}" class="page-link next-all">Prev All</a></li>`);  
-      }
-      if(i === 0 && i === (numPages-2)){
-        $('.pagination').append ('<li class="page-item '+active+'"><a href="#"  rel="'+i+'" class="page-link">'+pageNum+'</a></li>');  
-      }
-      else if (inStartRange && i < maxRange) {
-        $('.pagination').append ('<li class="page-item '+active+'"><a href="#"  rel="'+i+'" class="page-link">'+pageNum+'</a></li>');  
-      }
-      else if (!inEndRange && i >= endRange) {
-        $('.pagination').append ('<li class="page-item '+active+'"><a href="#"  rel="'+i+'" class="page-link">'+pageNum+'</a></li>'); 
-      }
-      else if (i === currentPage - maxAround || i === currentPage || i === currentPage + maxAround) {
-        $('.pagination').append ('<li class="page-item '+active+'"><a href="#"  rel="'+i+'" class="page-link">'+pageNum+'</a></li>');
-      }
-      else {
-        if (lastDotIndex === -1 || (!inStartRange && !inEndRange)) {
-            lastDotIndex = i;
-            $('.pagination').append ('<li class="page-item"><span class="dots">...</span></li>');
-        }
-      }
-      if(i === numPages - 1){
-        $('.pagination').append('<li class="page-item"><a href="#" rel="'+(pageNum-1)+'" class="page-link next-all">Next All</a></li>');  
-      }
-    }  
-    $('.page-link').on('click', function(e) {  
+    $(document).on('click','.pagination a',function(e){
       e.preventDefault()
       let currPage = $(this).attr('rel');  
       let startItem = currPage * rowsShown;  
       let endItem = startItem + rowsShown;  
       newData = data.slice(startItem, endItem)
-      $('.page-link').parent().removeClass('active');
-      $(this).not('.next-all').parent().addClass('active');  
+      $('.page-link').removeClass('active');
+      $(this).not('.next-all').addClass('active');  
       if ($(this).hasClass('next-all')) {
         let target = $(this).attr('rel')
         $(`.page-link[rel="${target}"]`).not('.next-all').parent().addClass('active');
       }
       $('.table  tbody tr').remove()
+      
       templateDataa(newData)
+      pagination(currPage , numPages, 1)
     });  
   }
 
@@ -226,4 +185,63 @@ function templateDataa(arr){
     `;  
     $(".table-striped tbody").append(dataShow);
   });  
+}
+
+/**
+ * pagination
+ * int currentPage
+ * int totalPage
+ * int numberShow
+ */
+function pagination(currentPage, totalPage, numberShow){
+  currentPage = currentPage ? currentPage : 1;
+  let minus = parseInt(currentPage) - parseInt(numberShow);
+  let plus = parseInt(currentPage) + parseInt(numberShow);
+  let moreMinus = 0;
+  let morePlus = 0;
+  let currentMinus = (currentPage - 1) > 1 ? (currentPage - 1) : 1 ;
+  let currentPlus;
+  if(currentPage <= totalPage){
+      currentPlus = parseInt(currentPage) + 1;
+  }else{
+      currentPlus = totalPage;
+  }
+
+  $('.pagination').empty();
+  if(currentPage > 1){
+      $('.pagination').append('<a href="#" rel="'+currentMinus+'">＜</a>');
+  }
+  for(let i = 1; i<=totalPage;i++){
+      if(i === 1){
+        $('.pagination').prepend(`<a href="#" rel="1" class="page-link next-all">Prev All</a>`);  
+      }
+      if(i == currentPage || !currentPage && i == 1){
+          $('.pagination').append('<a href="#"  rel="'+i+'" class="page-link">'+i+'</a>');
+      }else if((minus - 1) <= i && i < currentPage){
+          if(minus >= 3 && moreMinus == 0){
+              $('.pagination').append('<a href="#" rel="1">1</a>');
+          }
+          if(moreMinus == 0 && minus > 2){
+              $('.pagination').append('<span class="curent">...</span>');
+              moreMinus++;
+          }else{
+              $('.pagination').append('<a href="#" rel="'+i+'">'+i+'</a>');
+          }
+      }else if(i > currentPage) {
+          if(plus >= i && i > currentPage){
+              $('.pagination').append('<a href="#" rel="'+i+'">'+i+'</a>');
+          }else if(i != totalPage && plus < totalPage && morePlus == 0){
+              $('.pagination').append('<span class="curent">...</span>');
+              morePlus++;
+          }else if(i === totalPage){
+              $('.pagination').append('<a href="#" rel="'+totalPage+'">'+totalPage+'</a>');
+              
+          }
+      }
+  }
+  if(currentPage < totalPage){
+      $('.pagination').append('<a href="javascript:void(0)" rel="'+currentPlus+'">＞</a>');
+      $('.pagination').append(`<a href="#" rel="${totalPage}" class="page-link next-all">Next All</a>`);  
+  }
+  
 }
