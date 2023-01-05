@@ -27,18 +27,18 @@ $(document).ready(function() {
     url: "https://63a56082318b23efa791bf88.mockapi.io/api/crud",
     success: function(data){
       let rowsTotal = data.length
+
       $('.total_items').html(rowsTotal)    
       renderData(data, rowsTotal);
     }
   });
+
   //Render Data in web
   function renderData(data, rowsTotal){
-
     let newData = data.reverse().slice(0, rowsShown);
-    templateDataa(newData)
-
     let numPages = Math.ceil(rowsTotal/rowsShown);  
 
+    templateDataa(newData)
     pagination(1, numPages, 1)
     
     $(document).on('click','.pagination a',function(e){
@@ -49,12 +49,9 @@ $(document).ready(function() {
       newData = data.slice(startItem, endItem)
       $('.page-link').removeClass('active');
       $(this).not('.next-all').addClass('active');  
-      if ($(this).hasClass('next-all')) {
-        let target = $(this).attr('rel')
-        $(`.page-link[rel="${target}"]`).not('.next-all').parent().addClass('active');
-      }
-      $('.table  tbody tr').remove()
       
+
+      $('.table  tbody tr').remove()
       templateDataa(newData)
       pagination(currPage , numPages, 1)
     });  
@@ -187,12 +184,7 @@ function templateDataa(arr){
   });  
 }
 
-/**
- * pagination
- * int currentPage
- * int totalPage
- * int numberShow
- */
+
 function pagination(currentPage, totalPage, numberShow){
   currentPage = currentPage ? currentPage : 1;
   let minus = parseInt(currentPage) - parseInt(numberShow);
