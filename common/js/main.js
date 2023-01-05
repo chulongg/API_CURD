@@ -201,12 +201,10 @@ function pagination(currentPage, totalPage, numberShow){
 
   $('.pagination').empty();
   if(currentPage > 1){
-      $('.pagination').append('<a href="#" rel="'+currentMinus+'"><i class="fa fa-chevron-left" aria-hidden="true"></i></a>');
+    $('.pagination').prepend(`<a href="#" rel="1" class="page-link next-all"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>`);  
+    $('.pagination').append('<a href="#" rel="'+currentMinus+'"><i class="fa fa-angle-left" aria-hidden="true"></i></a>');
   }
   for(let i = 1; i<=totalPage;i++){
-      if(i === 1){
-        $('.pagination').prepend(`<a href="#" rel="1" class="page-link next-all">Prev All</a>`);  
-      }
       if(i == currentPage || !currentPage && i == 1){
           $('.pagination').append('<a href="#"  rel="'+i+'" class="page-link">'+i+'</a>');
       }else if((minus - 1) <= i && i < currentPage){
@@ -232,8 +230,8 @@ function pagination(currentPage, totalPage, numberShow){
       }
   }
   if(currentPage < totalPage){
-      $('.pagination').append('<a href="javascript:void(0)" rel="'+currentPlus+'"><i class="fa fa-chevron-right" aria-hidden="true"></i></i></a>');
-      $('.pagination').append(`<a href="#" rel="${totalPage}" class="page-link next-all">Next All</a>`);  
+      $('.pagination').append('<a href="javascript:void(0)" rel="'+currentPlus+'"><i class="fa fa-angle-right" aria-hidden="true"></i></a>');
+      $('.pagination').append(`<a href="#" rel="${totalPage}" class="page-link next-all"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a>`);  
   }
   
 }
