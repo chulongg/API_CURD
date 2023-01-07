@@ -1,1 +1,1 @@
-# <a href='https://chulongg.github.io/API_CURD/'>Link test<a/>
+# <a href='https://chulongg.github.io/API_CURD/' target='_blank'>Link test<a/>
